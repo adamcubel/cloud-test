@@ -19,7 +19,7 @@ resource "aws_vpc" "test" {
 }
 
 resource "aws_subnet" "iaas" {
-  vpc_id     = aws_vpc.main.id
+  vpc_id     = aws_vpc.test.id
   cidr_block = "10.10.0.0/18"
 
   tags = {
@@ -28,7 +28,7 @@ resource "aws_subnet" "iaas" {
 }
 
 resource "aws_subnet" "eks1" {
-  vpc_id     = aws_vpc.main.id
+  vpc_id     = aws_vpc.test.id
   cidr_block = "10.10.64.0/18"
 
   tags = {
@@ -37,7 +37,7 @@ resource "aws_subnet" "eks1" {
 }
 
 resource "aws_subnet" "eks2" {
-  vpc_id     = aws_vpc.main.id
+  vpc_id     = aws_vpc.test.id
   cidr_block = "10.10.128.0/18"
 
   tags = {
@@ -46,7 +46,7 @@ resource "aws_subnet" "eks2" {
 }
 
 resource "aws_subnet" "eks3" {
-  vpc_id     = aws_vpc.main.id
+  vpc_id     = aws_vpc.test.id
   cidr_block = "10.10.192.0/18"
 
   tags = {
@@ -57,7 +57,7 @@ resource "aws_subnet" "eks3" {
 resource "aws_security_group" "eks" {
   name        = "EKS Cluster"
   description = "Allow traffic"
-  vpc_id      = data.aws_vpc.cluster_vpc.id
+  vpc_id      = data.aws_vpc.test.id
 
   ingress {
     description      = "World"
