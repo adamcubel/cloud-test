@@ -9,12 +9,13 @@ Your instructor will begin the process by providing you with the following:
 
 You will have thirty minutes to complete the instructions. Explain to the team 
 what you are doing. There may be some intentional pitfalls along the way 
-intended to see how you think. Begin by logging into the AWS Console via the 
-URL provided. 
+intended to see how you think. 
 
-After logging into the AWS Console, proceed to the EC2 Dashboard. You can find 
-the dashboard from the AWS Console Search bar. Create an EC2 instance with the 
-following parameters:
+## Setting up the Developer VM
+
+Begin by logging into the AWS Console via the URL provided. After logging into 
+the AWS Console, proceed to the EC2 Dashboard. You can find the dashboard from 
+the AWS Console Search bar. Create an EC2 instance with the following parameters:
 - Name: Deployment VM
 - AMI: Amazon Linux 2023 AMI
 - Instance Size: t3.medium
@@ -36,7 +37,13 @@ sudo yum install -y \
 sudo systemctl start docker
 sudo usermod -a -G docker ec2-user
 sudo su - ec2-user
+```
 
+## Deploy the EKS Cluster
+
+Clone the codebase and build the docker image:
+
+```
 git clone https://github.com/adamcubel/cloud-test.git
 cd cloud-test/.devcontainer
 docker build . -t devcontainer:latest
@@ -120,3 +127,83 @@ When ready, create the EKS cluster using the following command:
 terraaform apply --var-file=./vars.tfvars
 ```
 
+You will be prompted to confirm that these are the changes you would like to 
+make. Confirm by typing 'yes' and pressing enter. Explain to the team what you 
+have just provisioned. 
+
+## Install a Kubernetes App
+
+To install a kubernetes application, you may choose your own, but for this 
+instructional, we will be installing the Prometheus, Loki, and Grafana (PLG) 
+stack. Begin by retrieving the EKS kubeconfig from the AWS CLI.
+
+```
+aws eks get-kubeconfig --name "eks-cluster"
+```
+
+This command will store your kubernetes configuration in ~/.kube/config on your
+local machine, enabling you to login and configure the cluster. Create a 
+namespace to run your monitoring workload.
+
+```
+kubectl create ns monitoring
+```
+
+
+
+```
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+```
+
+We can install all necessary components at once by using the grafana/loki-stack
+umbrella chart. Before we install the chart, let’s download the values-file and
+see what customizations are supported for grafana/loki-stack:
+
+```
+helm show values grafana/loki-stack > ~/loki-stack-values.yml
+```
+
+If we look at the loki-stack-values.yml file, we will immediately recognize that 
+this Helm chart can deploy more than “just” Promtail, Loki, and Grafana. However, 
+we will now customize the value file to deploy just Promtail, Loki, and Grafana. 
+Make the following changes within loki-stack-values.yml.
+
+```
+loki:
+ enabled: true
+ persistence:
+  enabled: true
+  storageClassName: default
+  size: 50Gi
+
+promtail:
+ enabled: true
+ pipelineStages:
+  - cri: {}
+  - json:
+    expressions:
+     is_even: is_even
+     level: level
+     version: version
+
+grafana:
+ enabled: true
+ sidecar:
+  datasources:
+   enabled: true
+ image:
+  tag: 8.3.5
+```
+
+You can now deploy the PLG stack by issuing the following command. 
+
+```
+helm install plg grafana/loki-stack -n monitoring -f ~/loki-stack-values.yml
+```
+
+
+
+
+You can also take a look at [values.yaml](./helm/values.yaml) for an idea of what 
+needs to be configured to successfully deploy in this environment.
