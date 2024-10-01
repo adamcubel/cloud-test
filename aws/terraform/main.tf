@@ -11,46 +11,14 @@ resource "random_string" "suffix" {
   special = false
 }
 
-resource "aws_vpc" "test" {
-  cidr_block = "10.10.0.0/16"
-  tags = {
-    Name = "test-vpc"
-  }
+data "aws_vpc" "test" {
+  id = var.vpc_id
 }
 
-resource "aws_subnet" "iaas" {
-  vpc_id     = aws_vpc.test.id
-  cidr_block = "10.10.0.0/18"
-
-  tags = {
-    Name = "IaaS"
-  }
-}
-
-resource "aws_subnet" "eks1" {
-  vpc_id     = aws_vpc.test.id
-  cidr_block = "10.10.64.0/18"
-
-  tags = {
-    Name = "eks1"
-  }
-}
-
-resource "aws_subnet" "eks2" {
-  vpc_id     = aws_vpc.test.id
-  cidr_block = "10.10.128.0/18"
-
-  tags = {
-    Name = "eks2"
-  }
-}
-
-resource "aws_subnet" "eks3" {
-  vpc_id     = aws_vpc.test.id
-  cidr_block = "10.10.192.0/18"
-
-  tags = {
-    Name = "eks3"
+data "aws_subnets" "test" {
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id]
   }
 }
 
@@ -88,13 +56,21 @@ module "eks" {
   cluster_name    = "EKS Cluster"
   cluster_version = var.eks_cluster_version
 
-  vpc_id                         = aws_vpc.test.id
-  subnet_ids                     = [aws_subnet.eks1.id, aws_subnet.eks2.id, aws_subnet.eks3.id]
+  vpc_id                         = data.aws_vpc.test.id
+  subnet_ids                     = data.aws_subnets.test.ids
   cluster_endpoint_public_access = false
   cluster_endpoint_private_access = true
+  enable_cluster_creator_admin_permissions = true
   cluster_additional_security_group_ids = [aws_security_group.eks.id]
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
+  }
+
+  cluster_addons = {
+    coredns            = {}
+    kube-proxy         = {}
+    vpc-cni            = {}
+    aws-ebs-csi-driver = {}
   }
 
   eks_managed_node_groups = {

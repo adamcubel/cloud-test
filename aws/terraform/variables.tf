@@ -4,6 +4,11 @@ variable "region" {
   default = "us-east-1"
 }
 
+variable "vpc_id" {
+  description = "ID of the VPC used for deployment"
+  type = string
+}
+
 variable "eks_cluster_version" {
   description = "version of EKS to use"
   type = string
