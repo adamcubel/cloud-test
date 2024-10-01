@@ -63,4 +63,39 @@ This container you have created provides you with access to a number of tools:
 - kubectl
 - terraform
 
-Within the [terraform](./terraform/)
+Within the [terraform](./terraform/) directory exists Infrastructure as Code 
+defined to create an EKS cluster within the VPC you define in the AWS account. 
+This EKS cluster will be provisioned to only allow for internal access. To 
+begin deploying the EKS Cluster you will first need to initialize Terraform.
+
+```
+cd <REPO root>/aws/terraform/
+
+terraform init
+```
+
+After initializing the Terraform - pulling down dependencies and preparing the 
+configuration as code for deployment - you can plan out the deployment using 
+the following command. You will be prompted to enter the ID of the VPC. 
+
+```
+terraform plan
+```
+
+If you run into an error stating that "No valid credential sources found", 
+proceed to configure the AWS CLI. This will allow you to provision AWS 
+resources in the account. To do this, issue the following command:
+
+```
+aws configure
+```
+
+After configuring the AWS CLI, to validate, issue the following command:
+
+```
+aws sts get-caller-identity
+
+or 
+
+aws s3 ls
+```

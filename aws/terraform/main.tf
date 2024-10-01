@@ -45,7 +45,7 @@ resource "aws_security_group" "eks" {
   }
 
   tags = merge({
-    Name = "EKS Cluster",
+    Name = "eks-cluster",
     "kubernetes.io/cluster/eks-cluster": "owned"
   })
 }
@@ -53,7 +53,7 @@ resource "aws_security_group" "eks" {
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.24.2"
-  cluster_name    = "EKS Cluster"
+  cluster_name    = "eks-cluster"
   cluster_version = var.eks_cluster_version
 
   vpc_id                         = data.aws_vpc.test.id
