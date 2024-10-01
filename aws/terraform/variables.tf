@@ -9,6 +9,11 @@ variable "vpc_id" {
   type = string
 }
 
+variable "eks_subnet_ids" {
+  description = "Subnet IDs for where EKS should be provisioned"
+  type = list(string)
+}
+
 variable "eks_cluster_version" {
   description = "version of EKS to use"
   type = string

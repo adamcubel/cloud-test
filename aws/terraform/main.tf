@@ -15,13 +15,6 @@ data "aws_vpc" "test" {
   id = var.vpc_id
 }
 
-data "aws_subnets" "test" {
-  filter {
-    name   = "vpc-id"
-    values = [var.vpc_id]
-  }
-}
-
 resource "aws_security_group" "eks" {
   name        = "EKS Cluster"
   description = "Allow traffic"
@@ -57,7 +50,7 @@ module "eks" {
   cluster_version = var.eks_cluster_version
 
   vpc_id                         = data.aws_vpc.test.id
-  subnet_ids                     = data.aws_subnets.test.ids
+  subnet_ids                     = var.eks_subnet_ids
   cluster_endpoint_public_access = false
   cluster_endpoint_private_access = true
   enable_cluster_creator_admin_permissions = true

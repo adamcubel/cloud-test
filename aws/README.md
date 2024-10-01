@@ -99,3 +99,24 @@ or
 
 aws s3 ls
 ```
+
+Then proceed to run the Terraform plan once more. At this point, the plan 
+should succeed. There should be 39 resources to create. You can specify a 
+variables file to use. Create one now named vars.tfvars
+
+Add the following lines to the file:
+
+```
+vpc_id = "vpc-0123456789"
+eks_subnet_ids = [
+    "subnet id 1",
+    "subnet id 2"
+]
+```
+
+When ready, create the EKS cluster using the following command:
+
+```
+terraaform apply --var-file=./vars.tfvars
+```
+
