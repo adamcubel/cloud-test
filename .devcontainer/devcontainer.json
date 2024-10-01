@@ -1,0 +1,14 @@
+{
+    "name": "Cloud Dev Container",
+    "build": { "dockerfile": "Dockerfile" },
+  
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "ms-azuretools.vscode-docker",
+          "hashicorp.terraform",
+          "redhat.vscode-yaml"
+        ]
+      }
+    }
+  }
