@@ -31,11 +31,5 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 
 # Install Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-echo >> /root/.bashrc
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /root/.bashrc
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-source /root/.bashrc
-
-# Install k9s
-brew install derailed/k9s/k9s
+curl -fsSL -o k9s_linux_amd64.rpm https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.rpm
+rpm -ivh k9s_linux_amd64.rpm
