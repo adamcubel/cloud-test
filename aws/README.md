@@ -141,6 +141,9 @@ stack. Begin by retrieving the EKS kubeconfig from the AWS CLI.
 aws eks get-kubeconfig --name "eks-cluster"
 ```
 
+Have a look around in the cluster. Use the tools available to ensure that the 
+deployment went smoothly, and see what has been provisioned within the cluster.
+
 This command will store your kubernetes configuration in ~/.kube/config on your
 local machine, enabling you to login and configure the cluster. Create a 
 namespace to run your monitoring workload.
@@ -149,7 +152,7 @@ namespace to run your monitoring workload.
 kubectl create ns monitoring
 ```
 
-
+Verify that the namespace exists in the cluster.
 
 ```
 helm repo add grafana https://grafana.github.io/helm-charts
@@ -202,8 +205,11 @@ You can now deploy the PLG stack by issuing the following command.
 helm install plg grafana/loki-stack -n monitoring -f ~/loki-stack-values.yml
 ```
 
-
-
-
-You can also take a look at [values.yaml](./helm/values.yaml) for an idea of what 
-needs to be configured to successfully deploy in this environment.
+Using the tools available, verify that Promtail, Grafana, and Loki are running.
+With this configuration, you will not be able to access Grafana over the web. 
+What needs to be setup in order to reach Grafana using the configured nginx 
+ingress? You can take a look at [values.yaml](./helm/values.yaml) for an idea 
+of what needs to be configured to successfully deploy in this environment. 
+Verift that the ingress has been configured properly and navigate to the site.
+Show off the Grafana interface running over HTTP. What can be improved for the 
+deployment?
