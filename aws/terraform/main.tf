@@ -2,6 +2,18 @@ provider "aws" {
   region = var.region
 }
 
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+      command     = "aws"
+    }
+  }
+}
+
 data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
@@ -75,5 +87,18 @@ module "eks" {
       max_size     = 6
       desired_size = 2
     }
+  }
+}
+
+resource "helm_release" "nginx-ingress-controller" {
+  depends_on = [ module.eks ]
+  name       = "nginx-ingress-controller"
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "nginx-ingress-controller"
+
+
+  set {
+    name  = "service.type"
+    value = "LoadBalancer"
   }
 }
