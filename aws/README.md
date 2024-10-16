@@ -124,7 +124,7 @@ eks_subnet_ids = [
 When ready, create the EKS cluster using the following command:
 
 ```
-terraaform apply --var-file=./vars.tfvars
+terraform apply --var-file=./vars.tfvars
 ```
 
 You will be prompted to confirm that these are the changes you would like to 
@@ -138,7 +138,7 @@ instructional, we will be installing the Prometheus, Loki, and Grafana (PLG)
 stack. Begin by retrieving the EKS kubeconfig from the AWS CLI.
 
 ```
-aws eks get-kubeconfig --name "eks-cluster"
+aws eks update-kubeconfig --name "eks-cluster"
 ```
 
 Have a look around in the cluster. Use the tools available to ensure that the 
