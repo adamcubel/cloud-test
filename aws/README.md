@@ -93,7 +93,7 @@ This EKS cluster will be provisioned to only allow for internal access. To
 begin deploying the EKS Cluster you will first need to initialize Terraform.
 
 ```
-cd <REPO root>/aws/terraform/
+cd cloud-test/aws/terraform/
 
 terraform init
 ```
