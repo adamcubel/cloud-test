@@ -108,7 +108,7 @@ terraform plan
 
 Then proceed to run the Terraform plan once more. At this point, the plan 
 should succeed. There should be 40 resources to create. You can specify a 
-variables file to use. Create one now named vars.tfvars
+variables file to use. Create one now named `vars.tfvars`
 
 Add the following lines to the file:
 
