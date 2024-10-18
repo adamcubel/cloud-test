@@ -70,6 +70,23 @@ This container you have created provides you with access to a number of tools:
 - kubectl
 - terraform
 
+Proceed to configure the AWS CLI. This will allow you to provision AWS 
+resources in the account. To do this, issue the following command:
+
+```
+aws configure
+```
+
+After configuring the AWS CLI, to validate, issue the following command:
+
+```
+aws sts get-caller-identity
+
+or 
+
+aws s3 ls
+```
+
 Within the [terraform](./terraform/) directory exists Infrastructure as Code 
 defined to create an EKS cluster within the VPC you define in the AWS account. 
 This EKS cluster will be provisioned to only allow for internal access. To 
@@ -89,24 +106,6 @@ the following command. You will be prompted to enter the ID of the VPC.
 terraform plan
 ```
 
-If you run into an error stating that "No valid credential sources found", 
-proceed to configure the AWS CLI. This will allow you to provision AWS 
-resources in the account. To do this, issue the following command:
-
-```
-aws configure
-```
-
-After configuring the AWS CLI, to validate, issue the following command:
-
-```
-aws sts get-caller-identity
-
-or 
-
-aws s3 ls
-```
-
 Then proceed to run the Terraform plan once more. At this point, the plan 
 should succeed. There should be 40 resources to create. You can specify a 
 variables file to use. Create one now named vars.tfvars
@@ -114,7 +113,7 @@ variables file to use. Create one now named vars.tfvars
 Add the following lines to the file:
 
 ```
-vpc_id = "vpc-0123456789"
+vpc_id         = "your VPC ID here"
 eks_subnet_ids = [
     "subnet id 1",
     "subnet id 2"
